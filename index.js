@@ -2,8 +2,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8000
-const connStr = "server=thanos-web.database.windows.net;user id=andrelivee;password=@andre123;Trusted_Connection=false;Encrypt=true;TrustServerCertificate=True;Database=Carros;Connection timeout=6000"
+const connStr = "server=tanos.database.windows.net;user id=gpcavassan;password=@@vencend10;Trusted_Connection=false;Encrypt=true;TrustServerCertificate=True;Database=tanos-teste;Connection timeout=6000"
+//const connStr = "server=thanos-web.database.windows.net;user id=andrelivee;password=@andre123;Trusted_Connection=false;Encrypt=true;TrustServerCertificate=True;Database=Carros;Connection timeout=6000"
 const sql = require("mssql");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //fazendo a conexão global
 sql.connect(connStr)
@@ -26,8 +30,15 @@ function execSQLQuery(sqlQry, res){
                .catch(err => res.json(err));
 }
 
-router.get('/carros', (req, res) =>{
-    execSQLQuery('SELECT * FROM Cliente', res);
+router.get('/clientes', (req, res) =>{
+    execSQLQuery('SELECT * FROM Clientes', res);
+})
+
+router.post('/clientes', (req, res) =>{
+    const nome = req.body.nome;
+    const email = req.body.email;
+    execSQLQuery(`INSERT INTO Clientes(Nome, Email) VALUES('${nome}','${email}')`, res);
+    res.json({message: "Inseriu !"})
 })
 
 app.listen(port);
